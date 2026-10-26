@@ -24,6 +24,7 @@ Why it exists: the GA4GH Starter Kit Passport Broker signs Visas with HMAC256 (a
 |---|---|
 | `GET /.well-known/jwks.json` | the public key (JSON Web Key Set) |
 | `GET /passport/{sub}` | `{"ga4gh_passport_v1": [<Visa JWT>, ...]}`, one Visa per grant of `sub` |
+| `GET /grants`, `PUT /grants` | the grants that are signed now; `PUT` replaces all of them (a JSON array), so a test can give and take away a grant |
 | `POST /verify` | body `{"passport": [<Visa JWT>, ...], "expectedValue": "<dataset URL>"}`; returns `{"granted": true/false, "reason": "..."}` |
 
 ## Configuration
