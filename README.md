@@ -59,3 +59,7 @@ java -jar target/quarkus-app/quarkus-run.jar
 Requires JDK 25 and Maven. The unit tests are plain JUnit; they sign Visas, tamper with them, and check that the
 verifier rejects a changed payload, an expired Visa, an untrusted issuer, another dataset, an unaccepted authority,
 and symmetric or `none` algorithms.
+
+## License
+
+Apache License, Version 2.0. See [LICENSE](LICENSE).
