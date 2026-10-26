@@ -27,4 +27,14 @@ class GrantStoreTest {
         store.replace(List.of());
         assertEquals(List.of(), store.all());
     }
+
+    @Test
+    void foreignVisasAreKeptPerSubjectAndCanBeRemoved() {
+        GrantStore store = new GrantStore(List.of());
+        store.setForeignVisas("a", List.of("x.y.z"));
+        assertEquals(List.of("x.y.z"), store.foreignVisasOf("a"));
+        assertEquals(List.of(), store.foreignVisasOf("b"));
+        store.setForeignVisas("a", List.of());
+        assertEquals(List.of(), store.foreignVisasOf("a"));
+    }
 }

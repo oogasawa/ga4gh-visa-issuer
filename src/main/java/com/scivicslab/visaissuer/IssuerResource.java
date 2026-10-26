@@ -40,7 +40,8 @@ public class IssuerResource {
     @GET
     @Path("passport/{sub}")
     public Map<String, Object> passport(@PathParam("sub") String sub) {
-        List<String> visas = grants.forSubject(sub).stream().map(signer::sign).toList();
+        List<String> visas = new java.util.ArrayList<>(grants.forSubject(sub).stream().map(signer::sign).toList());
+        visas.addAll(grants.foreignVisasOf(sub));
         return Map.of("ga4gh_passport_v1", visas);
     }
 
@@ -58,5 +59,17 @@ public class IssuerResource {
     public List<Grant> replaceGrants(List<Grant> newGrants) {
         grants.replace(newGrants);
         return grants.all();
+    }
+
+    /**
+     * Visas of other issuers that the Passport of the subject carries next to the Visas signed here. A test uses it
+     * to hand the Visas of another issuer to a verifier through the URL the verifier already trusts.
+     */
+    @PUT
+    @Path("passport/{sub}/foreign-visas")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public List<String> setForeignVisas(@PathParam("sub") String sub, List<String> visas) {
+        grants.setForeignVisas(sub, visas);
+        return grants.foreignVisasOf(sub);
     }
 }

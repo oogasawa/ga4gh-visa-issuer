@@ -3,6 +3,8 @@ package com.scivicslab.visaissuer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -15,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public final class GrantStore {
 
     private final AtomicReference<List<Grant>> grants;
+    private final Map<String, List<String>> foreignVisas = new ConcurrentHashMap<>();
 
     public GrantStore(List<Grant> grants) {
         this.grants = new AtomicReference<>(List.copyOf(grants));
@@ -40,5 +43,19 @@ public final class GrantStore {
     /** Replaces all grants. */
     public void replace(List<Grant> newGrants) {
         grants.set(List.copyOf(newGrants));
+    }
+
+    /** Visas of other issuers that the Passport of a subject carries next to the Visas signed here (a test hook). */
+    public List<String> foreignVisasOf(String sub) {
+        return foreignVisas.getOrDefault(sub, List.of());
+    }
+
+    /** Sets the Visas of other issuers for a subject; an empty list removes them. */
+    public void setForeignVisas(String sub, List<String> visas) {
+        if (visas.isEmpty()) {
+            foreignVisas.remove(sub);
+        } else {
+            foreignVisas.put(sub, List.copyOf(visas));
+        }
     }
 }
